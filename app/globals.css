@@ -1,26 +1,37 @@
 @import "tailwindcss";
 
+/* 1. CONFIGURACIÓN GLOBAL DE FUENTE (Arial 12pt) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-arial: Arial;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-arial);
+  font-size: 16px; /* Equivale a 12pt */
+  background-color: #0b1118;
+  color: white;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* En tu app/globals.css */
+/* app/globals.css */
+
+/* app/globals.css */
+
+.bg-hero-space {
+  /* El 'fixed' hace que el fondo no se desplace con el scroll */
+  background: radial-gradient(circle at center, #1a2a3a 0%, #0d141d 100%) fixed;
+  background-size: cover;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Si tienes un contenedor de estrellas, también debe ser fixed */
+.stars-container {
+  position: fixed; 
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }

@@ -1,8 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, useSpring, useMotionValue } from 'framer-motion';
+// 1. CAMBIO: Usamos el router de Next.js, no de react-router-dom
+import { useRouter } from "next/navigation"; 
 
 export default function Hero() {
+    // 2. CAMBIO: Inicializamos el router de Next.js
+    const router = useRouter(); 
+    
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
     const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
@@ -21,8 +26,8 @@ export default function Hero() {
     }, [mouseX, mouseY]);
 
     return (
-        <section className="bg-transparent min-h-[90vh] flex flex-col items-center justify-center pt-20 relative w-full">
-            {/* FONDO FIJO */}
+        <section className="bg-transparent min-h-[90vh] flex flex-col items-center justify-center pt-20 relative w-full overflow-hidden">
+            {/* FONDO ESPACIAL (Estrellas y Nebulosas) */}
             <motion.div style={{ x: springX, y: springY }} className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute inset-0 opacity-40"
                     style={{
@@ -36,7 +41,6 @@ export default function Hero() {
                         backgroundSize: '400px 400px'
                     }}>
                 </div>
-                {/* Nebulosas ajustadas al nuevo verde */}
                 <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#22c55e]/10 rounded-full blur-[120px]"></div>
                 <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px]"></div>
             </motion.div>
@@ -44,7 +48,6 @@ export default function Hero() {
             {/* COHETE ANIMADO */}
             <div className="fixed top-[45%] left-[-20%] animate-rocket-fly z-30 pointer-events-none">
                 <div className="relative">
-                    {/* Sombra y estela en verde */}
                     <span className="text-5xl filter drop-shadow-[0_0_15px_rgba(34,197,94,0.8)]">🚀</span>
                     <div className="absolute top-1/2 right-full h-[2px] w-40 bg-gradient-to-l from-[#22c55e] to-transparent blur-sm"></div>
                 </div>
@@ -57,23 +60,27 @@ export default function Hero() {
                     <span className="text-white/20 font-thin text-2xl">→</span>
                     <img src="https://flagcdn.com/w80/pe.png" alt="Peru" className="w-10 h-7 object-cover rounded-md shadow-lg border border-white/10" />
                 </div>
+
                 <div className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-sm font-medium mb-8 mx-auto w-max">
                     <span className="text-[#22c55e] animate-pulse">⚡</span> Envío Express 3-7 días a todo Perú
                 </div>
-                <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight leading-tight">
-                    Importa desde Estados Unidos <br />
+
+                <h1 className="text-5xl md:text-7xl font-black mb-6 tracking-tight leading-tight italic uppercase">
+                    Importa desde USA <br />
                     <span className="text-white/40">con garantía total</span>
                 </h1>
+
                 <p className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl mx-auto leading-relaxed">
                     Tu casillero exclusivo en Miami. Tarifa plana de <span className="text-[#22c55e] font-bold">$12/kg</span>. <br />
-                    Peso neto real, sin volumétrico. Consolidación gratis.
+                    Sin peso volumétrico. Consolidación gratis.
                 </p>
-                <div className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm md:text-base font-medium mb-10 backdrop-blur-sm mx-auto w-max">
-                    <span>🎁</span> ¡Ahorra el 7% de impuestos americanos con nuestro almacén en Miami!
-                </div>
+
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-                    {/* Botón principal adaptado al verde de la marca */}
-                    <button className="bg-[#22c55e] text-[#0b1118] px-10 py-4 rounded-2xl font-bold text-lg hover:bg-[#1ea950] transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:scale-105 active:scale-95">
+                    <button
+                        // 3. CAMBIO: Usamos router.push para ir al registro
+                        onClick={() => router.push("/register")}
+                        className="bg-[#22c55e] text-[#0b1118] px-10 py-4 rounded-2xl font-black text-lg hover:bg-[#1ea950] transition-all shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:scale-105 active:scale-95 uppercase italic"
+                    >
                         Obtén tu casillero gratis →
                     </button>
                     <button className="text-white/80 font-bold text-lg hover:text-white transition-colors">
@@ -81,7 +88,6 @@ export default function Hero() {
                     </button>
                 </div>
             </div>
-            
         </section>
     );
 }

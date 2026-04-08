@@ -1,5 +1,12 @@
+import type { Metadata } from 'next'
+import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar' // Asegúrate de que la ruta sea correcta
+
+export const metadata: Metadata = {
+  title: 'GOSU IMPORT',
+  description: 'Tu aliado confiable para importaciones desde USA',
+}
 
 export default function RootLayout({
   children,
@@ -7,20 +14,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
-      {/* 1. Agregamos "bg-hero-space" al body. 
-          2. Quitamos "font-sans" para que use el Arial que pusimos en globals.css 
-      */}
-      <body className="bg-hero-space min-h-screen antialiased">
-        <Navbar /> 
-        
-        {/* Mantenemos el padding-top para el Navbar, 
-            pero el main debe ser transparente para ver el fondo del body 
-        */}
-        <main className="pt-20 bg-transparent"> 
-          {children}
-        </main>
-      </body>
-    </html>
+    // 1. Envolvemos toda la app con Clerk y la configuramos en español
+    <ClerkProvider>
+      <html lang="es">
+        <body className="bg-hero-space min-h-screen antialiased">
+          
+          {/* 2. Tu Navbar personalizado de Gosu Import */}
+          <Navbar /> 
+          
+          {/* 3. Tu contenedor principal */}
+          <main className="bg-transparent"> 
+            {children}
+          </main>
+
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

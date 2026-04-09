@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
-import { Show, UserButton } from "@clerk/nextjs";
 
 export default function Navbar() {
   const paginaActual = usePathname();
@@ -15,7 +14,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 w-full z-[100] bg-[#070b12]/80 backdrop-blur-xl border-b border-white/5">
-      <div className="max-w-[1400px] mx-auto px-4">
+      <div className="max-w-[1440px] mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           
           {/* Logo - Tu marca GOSU */}
@@ -49,6 +48,11 @@ export default function Navbar() {
                 <span>🔢</span> Calculadora
             </Link>
 
+            {/* SECCIÓN NUEVA: CATÁLOGO MAYORISTA */}
+            <Link href="/catalogo" className={`flex items-center gap-1.5 transition-colors ${paginaActual === '/catalogo' ? 'text-[#22c55e]' : 'hover:text-[#22c55e]'}`}>
+                <span>✨</span> Catálogo
+            </Link>
+
             <Link href="/vip" className={`flex items-center gap-1.5 transition-colors ${paginaActual === '/vip' ? 'text-amber-400' : 'text-amber-500/80 hover:text-amber-400'}`}>
                 <span>👑</span> Club VIP
             </Link>
@@ -56,33 +60,24 @@ export default function Navbar() {
             <Link href="/#faq" className="hover:text-[#22c55e] transition-colors">
                 FAQ
             </Link>
+
+            {/* CONTACTO: AHORA LLEVA AL COMPONENTE CTA */}
             <Link href="/#contacto" className="hover:text-[#22c55e] transition-colors">
                 Contacto
             </Link>
           </div>
           
 
-          {/* Botones Derecha */}
+          {/* Botones Derecha - COMPLETAMENTE LIMPIOS DE CLERK */}
           <div className="flex items-center gap-4 shrink-0">
-            <Show when="signed-out">
-              <Link href="/login" className="hidden md:block text-slate-300 font-bold hover:text-white transition-colors text-[11px] uppercase italic whitespace-nowrap">
-                Iniciar sesión
-              </Link>
-              <Link href="/register" className="px-5 py-2.5 bg-[#22c55e] text-[#0b1118] rounded-xl font-black text-[11px] hover:bg-[#1ea950] transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:scale-105 uppercase italic whitespace-nowrap">
-                Registrarse
-              </Link>
-            </Show>
-
-            <Show when="signed-in">
-              <UserButton 
-                appearance={{
-                  elements: {
-                    avatarBox: "w-10 h-10 border-2 border-[#22c55e]/50 hover:border-[#22c55e] transition-all shadow-[0_0_15px_rgba(34,197,94,0.2)]"
-                  }
-                }}
-              />
-            </Show>
+            <Link href="/login" className="hidden md:block text-slate-300 font-bold hover:text-white transition-colors text-[11px] uppercase italic whitespace-nowrap">
+              Iniciar sesión
+            </Link>
+            <Link href="/register" className="px-5 py-2.5 bg-[#22c55e] text-[#0b1118] rounded-xl font-black text-[11px] hover:bg-[#1ea950] transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:scale-105 uppercase italic whitespace-nowrap">
+              Registrarse
+            </Link>
           </div>
+
         </div>
       </div>
     </nav>

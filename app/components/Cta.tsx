@@ -2,8 +2,9 @@ import React from 'react';
 
 export default function Cta() {
     return (
-        <section className="relative z-10 w-full max-w-5xl mx-auto px-4 pb-32 pt-10">
-            
+        // Agregamos el id="contacto" aquí
+        <section id="contacto" className="relative z-10 w-full max-w-5xl mx-auto px-4 pb-32 pt-10 scroll-mt-24">
+            {/* El scroll-mt-24 es para que al saltar no quede pegado al techo por culpa del navbar */}
             {/* =========================================
                 PARTE 1: CONTÁCTANOS
             ========================================= */}

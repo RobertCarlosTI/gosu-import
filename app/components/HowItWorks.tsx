@@ -21,7 +21,7 @@ export default function HowItWorks() {
     };
 
     return (
-        <section className="relative z-10 w-full max-w-6xl mx-auto py-24 px-4 bg-transparent">
+        <section id="proceso" className="relative z-10 w-full max-w-6xl mx-auto py-24 px-4 bg-transparent">
             {/* Título de la sección */}
             <div className="text-center mb-20">
                 <h2 className="text-white text-3xl md:text-5xl font-extrabold mb-4 tracking-tight uppercase italic">¿Cómo funciona?</h2>

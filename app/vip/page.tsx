@@ -33,31 +33,40 @@ export default function VipPage() {
                     👑
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight italic uppercase">
-                    La lealtad tiene su <span className="text-amber-400">recompensa</span>
+                    La lealtad baja <span className="text-amber-400">tus costos</span>
                 </h1>
                 <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium">
-                    En GOSU IMPORT valoramos tu confianza. Mientras más importes con nosotros, mejores tarifas y beneficios exclusivos desbloquearás.
+                    En GOSU IMPORT valoramos tu confianza. Mantienes tu tarifa de $9/kg y reducimos drásticamente tu costo fijo de desaduanaje.
                 </p>
             </section>
 
-            {/* SECCIÓN DE NIVELES */}
+            {/* SECCIÓN DE NIVELES (CON LA TARIFA 9 + X) */}
             <section className="relative z-10 w-full max-w-7xl mx-auto px-4 pb-24 pt-10">
+                
+                {/* Recordatorio de tarifa normal */}
+                <div className="text-center mb-16">
+                    <p className="text-[#22c55e] text-sm font-black uppercase tracking-widest bg-[#22c55e]/10 inline-block px-5 py-2.5 rounded-full border border-[#22c55e]/20">
+                        Tarifa normal sin VIP: $9/kg + $9 fijo
+                    </p>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch mb-32">
                     <VipTier 
-                        name="Bronce" icon="⭐" range="0 - 99 kg" price="$12" lbPrice="$8" iconColor="text-orange-400"
+                        name="Bronce" icon="⭐" range="0 - 200 kg" price="$9" customsFee="$7" iconColor="text-orange-400"
                         features={["Consolidación hasta 5 paquetes", "Soporte por WhatsApp", "Tracking en tiempo real"]}
                     />
                     <VipTier 
-                        name="Plata" icon="🌟" range="100 - 499 kg" price="$11" lbPrice="$7.5" iconColor="text-slate-300"
+                        name="Plata" icon="🌟" range="200 - 400 kg" price="$9" customsFee="$5" iconColor="text-slate-300"
                         features={["Consolidación hasta 7 paquetes", "Atención prioritaria", "Tracking en tiempo real"]}
                     />
+                    {/* EL NIVEL ESTRELLA 9+4 */}
                     <VipTier 
-                        name="Oro" icon="👑" range="500 - 999 kg" price="$10" lbPrice="$7" isFeatured={true} iconColor="text-[#22c55e]"
+                        name="Oro" icon="👑" range="400 - 600 kg" price="$9" customsFee="$4" isFeatured={true} iconColor="text-[#22c55e]"
                         features={["Consolidación ilimitada", "Asesor personal asignado", "Prioridad en despachos"]}
                     />
                     <VipTier 
-                        name="Platino" icon="💎" range="1,000+ kg" price="$9" lbPrice="$6.5" iconColor="text-cyan-400"
-                        features={["Línea directa con gerencia", "Prioridad máxima en vuelos", "Atención 24/7"]}
+                        name="Platino" icon="💎" range="800 + kg" price="$9" 
+                        features={["¡Desaduanaje GRATIS!", "Prioridad máxima en vuelos", "Atención 24/7"]}
                     />
                 </div>
 
@@ -101,7 +110,7 @@ export default function VipPage() {
                         />
                         <FaqItem 
                             question="¿Puedo bajar de nivel?" 
-                            answer="Sí, tu nivel se ajusta mensualmente según tu actividad. Si un mes envías menos, tu tarifa se ajustará al nivel correspondiente." 
+                            answer="Sí, tu nivel se ajusta mensualmente según tu actividad. Si un mes envías menos, tu tarifa de desaduanaje se ajustará al nivel correspondiente." 
                         />
                         <FaqItem 
                             question="¿Cuál es la diferencia con la VIP Corporativa?" 
@@ -110,33 +119,33 @@ export default function VipPage() {
                     </div>
                 </div>
 
+                {/* --- SECCIÓN FINAL --- */}
                 <div className="flex flex-col items-center text-center">
-        
-        {/* Título con estilo GOSU */}
-        <h2 className="text-white text-4xl md:text-5xl font-black mb-4 italic uppercase tracking-tighter">
-            ¿Listo para <span className="text-[#22c55e]">comenzar?</span>
-        </h2>
-        
-        {/* Subtexto limpio */}
-        <p className="text-slate-400 text-lg md:text-xl font-medium mb-10 max-w-xl leading-relaxed">
-            Regístrate gratis y comienza a disfrutar de todos los beneficios exclusivos del <span className="text-white">Club VIP</span>.
-        </p>
+                    {/* Título con estilo GOSU */}
+                    <h2 className="text-white text-4xl md:text-5xl font-black mb-4 italic uppercase tracking-tighter">
+                        ¿Listo para <span className="text-[#22c55e]">comenzar?</span>
+                    </h2>
+                    
+                    {/* Subtexto limpio */}
+                    <p className="text-slate-400 text-lg md:text-xl font-medium mb-10 max-w-xl leading-relaxed">
+                        Regístrate gratis y comienza a disfrutar de todos los beneficios exclusivos del <span className="text-white">Club VIP</span>.
+                    </p>
 
-        {/* Botón Estilo Moderno (Inspirado en tu imagen pero con tu color) */}
-        <button 
-            onClick={() => router.push("/register")}
-            className="group relative flex items-center gap-3 bg-[#22c55e] text-[#0b1118] px-10 py-5 rounded-2xl font-black text-xl hover:bg-[#1ea950] transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_-12px_rgba(34,197,94,0.5)] uppercase italic"
-        >
-            Registrarse ahora
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            
-            {/* Destello sutil alrededor del botón */}
-            <div className="absolute inset-0 rounded-2xl bg-[#22c55e]/20 blur-xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </button>
+                    {/* Botón Estilo Moderno */}
+                    <button 
+                        onClick={() => router.push("/register")}
+                        className="group relative flex items-center gap-3 bg-[#22c55e] text-[#0b1118] px-10 py-5 rounded-2xl font-black text-xl hover:bg-[#1ea950] transition-all hover:scale-105 active:scale-95 shadow-[0_20px_50px_-12px_rgba(34,197,94,0.5)] uppercase italic"
+                    >
+                        Registrarse ahora
+                        <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                        
+                        {/* Destello sutil alrededor del botón */}
+                        <div className="absolute inset-0 rounded-2xl bg-[#22c55e]/20 blur-xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
 
-        {/* Decoración inferior sutil */}
-        <div className="mt-16 w-24 h-1 bg-gradient-to-r from-transparent via-[#22c55e]/20 to-transparent rounded-full" />
-    </div>
+                    {/* Decoración inferior sutil */}
+                    <div className="mt-16 w-24 h-1 bg-gradient-to-r from-transparent via-[#22c55e]/20 to-transparent rounded-full" />
+                </div>
             </section>
         </main>
     );
@@ -156,32 +165,57 @@ const FaqItem = ({ question, answer }: { question: string, answer: string }) => 
     </div>
 );
 
+// NUEVO VIP TIER ADAPTADO PARA $9 + DESADUANAJE
 const VipTier = ({ 
-    name, icon, range, price, lbPrice, features, isFeatured = false, iconColor 
+    name, icon, range, price, customsFee, features, isFeatured = false, iconColor 
 }: any) => (
-    <div className={`relative flex flex-col p-8 rounded-[2.5rem] border transition-all duration-500 ${
+    <div className={`relative flex flex-col p-6 lg:p-8 rounded-[2.5rem] border transition-all duration-500 group ${
         isFeatured 
         ? 'bg-[#111827] border-[#22c55e] shadow-[0_0_50px_-12px_rgba(34,197,94,0.3)] scale-105 z-20' 
         : 'bg-[#1a2633]/40 backdrop-blur-md border-white/5 hover:border-white/20 z-10'
     }`}>
+        
+        {isFeatured && (
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#22c55e] text-[#0b1118] text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest shadow-xl">
+                MÁS POPULAR
+            </div>
+        )}
+
         <div className="flex flex-col items-center text-center mb-6">
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4 bg-white/5 border border-white/10 ${iconColor}`}>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4 bg-white/5 border border-white/10 ${iconColor} group-hover:scale-110 transition-transform`}>
                 {icon}
             </div>
             <h3 className="text-white text-2xl font-bold uppercase italic tracking-tighter">{name}</h3>
         </div>
-        <div className="text-center mb-8 border-b border-white/5 pb-8 flex-grow">
-            <div className="flex items-baseline justify-center gap-1 text-white">
-                <span className="text-5xl font-black tracking-tighter">{price}</span>
-                <span className="text-sm font-bold opacity-60">/kg</span>
-            </div>
-            <p className="text-slate-500 text-xs mt-1 font-mono italic">({lbPrice}/lb)</p>
+
+        <div className={`rounded-2xl p-3 mb-6 text-center ${isFeatured ? 'bg-[#22c55e]/10' : 'bg-white/5'}`}>
+            <span className="text-slate-500 text-[9px] font-bold uppercase block mb-1">Volumen mensual</span>
+            <span className="text-white text-base font-black tracking-tight">{range}</span>
         </div>
+
+        {/* ESTRUCTURA VISUAL: 9 POR KG + X FIJO */}
+        <div className="text-center mb-8 border-b border-white/5 pb-6 flex-grow">
+            <div className="flex justify-center items-center gap-2 mb-2">
+                <div className="text-right">
+                    <span className="text-3xl font-black text-white">{price}</span>
+                    <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-widest">Por kg</span>
+                </div>
+                <span className="text-2xl font-black text-[#22c55e]">+</span>
+                <div className="text-left">
+                    <span className="text-3xl font-black text-white">{customsFee}</span>
+                    <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-widest">Fijo</span>
+                </div>
+            </div>
+            <p className="text-[#22c55e] text-[9px] font-black uppercase tracking-widest bg-[#22c55e]/10 inline-block px-3 py-1 rounded-full mt-2">
+                {customsFee === '$0' ? 'Cero Desaduanaje' : 'Ahorro en Trámite'}
+            </p>
+        </div>
+
         <ul className="space-y-4 flex-grow">
             {features.map((feature: string, i: number) => (
                 <li key={i} className="flex items-start gap-3">
                     <ShieldCheck className="text-[#22c55e] w-4 h-4 shrink-0 mt-0.5" />
-                    <span className="text-slate-300 text-xs font-medium leading-tight">{feature}</span>
+                    <span className="text-slate-300 text-[13px] font-medium leading-tight">{feature}</span>
                 </li>
             ))}
         </ul>

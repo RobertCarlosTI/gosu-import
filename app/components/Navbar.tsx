@@ -2,62 +2,73 @@
 
 import Link from 'next/link';
 import React from 'react';
-import { usePathname } from 'next/navigation'; // 1. El "Sensor de habitación"
+import { usePathname } from 'next/navigation';
 import { Show, UserButton } from "@clerk/nextjs";
 
 export default function Navbar() {
-  // 2. Le preguntamos al sensor: "¿En qué página estamos ahorita?"
   const paginaActual = usePathname();
-
-  // 3. Hacemos una lista de las páginas donde el Navbar debe ser INVISIBLE
   const paginasDondeMeEscondo = ["/login", "/register", "/sign-in", "/sign-up"];
 
-  // 4. EL TRUCO DE MAGIA: Si estamos en una de esas páginas... ¡PUFF! Desaparece.
   if (paginasDondeMeEscondo.includes(paginaActual)) {
-    return null; // "null" significa que no dibuje nada en la pantalla
+    return null;
   }
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-[#070b12]/70 backdrop-blur-lg border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-0 w-full z-[100] bg-[#070b12]/80 backdrop-blur-xl border-b border-white/5">
+      <div className="max-w-[1400px] mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           
           {/* Logo - Tu marca GOSU */}
-          <Link href="/" className="flex items-center gap-2 group cursor-pointer">
+          <Link href="/" className="flex items-center gap-2 group cursor-pointer shrink-0">
             <span className="text-[#22c55e] text-5xl font-black italic tracking-tighter transform group-hover:scale-105 transition-transform mt-1">
               G
             </span>
             <div className="flex flex-col justify-center">
-              <span className="text-2xl font-black text-white tracking-widest leading-none">
+              <span className="text-2xl font-black text-white tracking-widest leading-none uppercase">
                 GOSU
               </span>
-              <span className="text-[11px] font-medium text-white tracking-[0.3em] mt-1 leading-none">
+              <span className="text-[11px] font-medium text-white tracking-[0.3em] mt-1 leading-none uppercase">
                 IMPORT
               </span>
             </div>
           </Link>
 
-          {/* Menú Central */}
-          <div className="hidden md:flex items-center gap-8 text-[14px] font-medium text-slate-300">
-            <a href="#" className="hover:text-[#22c55e] transition-colors">Mi primera Impo</a>
-            <a href="#" className="hover:text-[#22c55e] transition-colors">Servicios</a>
-            <a href="#" className="hover:text-[#22c55e] transition-colors">Cómo funciona</a>
+          {/* Menú Central - AJUSTADO PARA QUE NO SE AMONTONE */}
+          <div className="hidden lg:flex items-center gap-5 text-[12px] font-bold text-slate-300 uppercase italic whitespace-nowrap">
+            <Link href="/#guia" className="hover:text-[#22c55e] transition-colors">
+                Mi primera Impo
+            </Link>
+            <Link href="/#servicios" className="hover:text-[#22c55e] transition-colors">
+                Servicios
+            </Link>
+            <Link href="/#proceso" className="hover:text-[#22c55e] transition-colors">
+                Cómo funciona
+            </Link>
             
-            <Link href="/vip" className="flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors">
+            <Link href="/calculadora" className={`flex items-center gap-1.5 transition-colors ${paginaActual === '/calculadora' ? 'text-[#22c55e]' : 'hover:text-[#22c55e]'}`}>
+                <span>🔢</span> Calculadora
+            </Link>
+
+            <Link href="/vip" className={`flex items-center gap-1.5 transition-colors ${paginaActual === '/vip' ? 'text-amber-400' : 'text-amber-500/80 hover:text-amber-400'}`}>
                 <span>👑</span> Club VIP
             </Link>
             
-            <a href="#" className="hover:text-[#22c55e] transition-colors">FAQ</a>
-            <a href="#" className="hover:text-[#22c55e] transition-colors">Contacto</a>
+            <Link href="/#faq" className="hover:text-[#22c55e] transition-colors">
+                FAQ
+            </Link>
+            <Link href="/#contacto" className="hover:text-[#22c55e] transition-colors">
+                Contacto
+            </Link>
           </div>
+          
 
           {/* Botones Derecha */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 shrink-0">
             <Show when="signed-out">
-              <Link href="/login" className="hidden md:block text-slate-300 font-medium hover:text-white transition-colors text-sm">
+              <Link href="/login" className="hidden md:block text-slate-300 font-bold hover:text-white transition-colors text-[11px] uppercase italic whitespace-nowrap">
                 Iniciar sesión
               </Link>
-              <Link href="/register" className="px-6 py-2.5 bg-[#22c55e] text-[#0b1118] rounded-xl font-bold text-sm hover:bg-[#1ea950] transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:scale-105">
+              <Link href="/register" className="px-5 py-2.5 bg-[#22c55e] text-[#0b1118] rounded-xl font-black text-[11px] hover:bg-[#1ea950] transition-all shadow-[0_0_20px_rgba(34,197,94,0.3)] hover:scale-105 uppercase italic whitespace-nowrap">
                 Registrarse
               </Link>
             </Show>
@@ -66,7 +77,7 @@ export default function Navbar() {
               <UserButton 
                 appearance={{
                   elements: {
-                    avatarBox: "w-10 h-10 border-2 border-[#22c55e]/50 hover:border-[#22c55e] transition-all"
+                    avatarBox: "w-10 h-10 border-2 border-[#22c55e]/50 hover:border-[#22c55e] transition-all shadow-[0_0_15px_rgba(34,197,94,0.2)]"
                   }
                 }}
               />

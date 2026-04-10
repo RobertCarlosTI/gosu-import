@@ -1,10 +1,38 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft, ShieldCheck, Clock, Package, MessageCircle } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
+
+// --- CONEXIÓN A SUPABASE ---
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://scpmnmgdvfdbpuyeiawn.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjcG1ubWdkdmZkYnB1eWVpYXduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MjEzNTAsImV4cCI6MjA5MTI5NzM1MH0.VAya1_yOql9DjgPavjhk9nO7tLxUnaokHOwKisBB1eU';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function LoginPage() {
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // FUNCIÓN PARA LOGIN CON GOOGLE
+  const handleGoogleLogin = async () => {
+      setError('');
+      setLoading(true);
+      try {
+          const { error } = await supabase.auth.signInWithOAuth({
+              provider: 'google',
+              options: {
+                  // Esto redirige al catálogo después de que Google aprueba
+                  redirectTo: `${window.location.origin}/catalogo`, 
+              }
+          });
+          if (error) throw error;
+      } catch (err: any) {
+          setError(err.message || 'Error al conectar con Google.');
+          setLoading(false);
+      }
+  };
+
   return (
     /* CAMBIO AQUÍ: Usamos h-screen y overflow-hidden para que NO salga la barra de scroll */
     <div className="h-screen w-full flex flex-col lg:flex-row bg-white overflow-hidden">
@@ -68,9 +96,22 @@ export default function LoginPage() {
             Inicia sesión con tu cuenta de Google para acceder a tu casillero y gestionar tus envíos
           </p>
 
-          <button className="w-full flex items-center justify-center gap-3 py-4 px-4 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-bold text-slate-700 shadow-sm mb-8 active:scale-[0.98]">
+          {/* MENSAJE DE ERROR (Por si falla Google) */}
+          {error && (
+              <div className="w-full mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-semibold text-center">
+                  {error}
+              </div>
+          )}
+
+          {/* BOTÓN FUNCIONAL DE GOOGLE CON ANIMACIONES */}
+          <button 
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 py-4 px-4 border border-slate-200 rounded-2xl bg-white hover:bg-slate-50 hover:shadow-lg hover:-translate-y-1 hover:border-slate-300 active:scale-95 active:shadow-sm transition-all duration-300 font-bold text-slate-700 mb-8 disabled:opacity-50"
+          >
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
-            Continuar con Google
+            {loading ? 'Conectando...' : 'Continuar con Google'}
           </button>
 
           <label className="flex items-center gap-3 w-full mb-8 cursor-pointer group justify-center lg:justify-start">
@@ -86,7 +127,7 @@ export default function LoginPage() {
             <div className="space-y-1">
               <p className="text-sm font-black text-[#166534]">Inicio de sesión seguro</p>
               <p className="text-xs text-[#166534]/80 leading-relaxed font-medium">
-                Usamos autenticación segura de Google. Después de iniciar sesión, completarás un breve formulario con tus datos de envío.
+                Usamos autenticación segura de Google. Después de iniciar sesión, podrás ver todo el catálogo VIP.
               </p>
             </div>
           </div>
@@ -98,7 +139,7 @@ export default function LoginPage() {
 
         <div className="absolute bottom-8 w-full text-center">
           <p className="text-xs text-slate-400 font-medium">
-            ¿Tienes problemas? <Link href="#" className="text-[#22c55e] hover:underline font-bold">Contáctanos</Link>
+            ¿No tienes cuenta? <Link href="/register" className="text-[#22c55e] hover:underline font-bold">Regístrate aquí</Link>
           </p>
         </div>
       </div>

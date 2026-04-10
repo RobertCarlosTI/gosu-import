@@ -1,192 +1,179 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { Search, ShoppingCart, Info, CheckCircle, Sparkles, Star } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { ShoppingCart, Plus, Minus, Crown, AlertCircle, Lock, Smartphone, Droplets, Check } from 'lucide-react';
+import Link from 'next/link';
 
-// --- CONEXIÓN A SUPABASE ---
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://scpmnmgdvfdbpuyeiawn.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'TU_ANON_KEY_AQUI';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Interfaz para TypeScript
-interface Perfume {
-    id: number;
-    name: string;
-    size: string;
-    price: number;
-    old_price: number | null;
-    image: string;
-    category: string;
-}
+// Lista de tus marcas principales para el filtro
+const MARCAS_PERFUMES = ['Todos', 'Lattafa', 'Armaf', 'Maison Alhambra', 'Afnan', 'Rasasi'];
 
 export default function CatalogoPage() {
-    const [perfumes, setPerfumes] = useState<Perfume[]>([]);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [perfumes, setPerfumes] = useState<any[]>([]);
+    const [iphones, setIphones] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    
+    const [categoriaActiva, setCategoriaActiva] = useState<string>('Perfumería');
+    const [marcaSeleccionada, setMarcaSeleccionada] = useState<string>('Todos');
+    
+    const [userRole, setUserRole] = useState<'normal' | 'vip'>('normal');
+    const [carrito, setCarrito] = useState<{ [id: string]: number }>({});
 
-    // --- EFECTO PARA TRAER DATOS DE SUPABASE ---
     useEffect(() => {
-        async function fetchPerfumes() {
-            const { data, error } = await supabase
-                .from('perfumes') // Asegúrate de que tu tabla se llame exactamente así en Supabase
-                .select('*');
-
-            if (error) {
-                console.error("Error al cargar el catálogo:", error);
-            } else {
-                setPerfumes(data || []);
-            }
+        const fetchDatos = async () => {
+            setLoading(true);
+            const [resPerfumes, resIphones] = await Promise.all([
+                supabase.from('perfumes').select('*'),
+                supabase.from('iphones').select('*')
+            ]);
+            if (resPerfumes.data) setPerfumes(resPerfumes.data);
+            if (resIphones.data) setIphones(resIphones.data);
             setLoading(false);
-        }
-        
-        fetchPerfumes();
+        };
+        fetchDatos();
     }, []);
 
-    // Filtro buscador
-    const filteredPerfumes = perfumes.filter(p => 
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const handleAdd = (id: string) => setCarrito(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+    const handleRemove = (id: string) => {
+        setCarrito(prev => {
+            const actual = prev[id] || 0;
+            if (actual - 1 <= 0) { const newC = { ...prev }; delete newC[id]; return newC; }
+            return { ...prev, [id]: actual - 1 };
+        });
+    };
+
+    const todosLosProductos = [...perfumes, ...iphones];
+    const totalPrecio = todosLosProductos.reduce((acc, prod) => acc + ((prod.price || 0) * (carrito[prod.id] || 0)), 0);
+    const totalItems = Object.values(carrito).reduce((acc, val) => acc + val, 0);
+    const totalPerfumes = perfumes.reduce((acc, p) => acc + (carrito[p.id] || 0), 0);
+    const minPerfumes = userRole === 'vip' ? 1 : 6;
+    const canCheckout = totalPerfumes === 0 || totalPerfumes >= minPerfumes;
+
+    // --- LÓGICA DE FILTRADO POR MARCA (INTELIGENTE) ---
+    const productosAMostrar = categoriaActiva === 'Perfumería' 
+        ? perfumes.filter(p => {
+            if (marcaSeleccionada === 'Todos') return true;
+            
+            const nombre = p.name?.toLowerCase() || '';
+            const marcaBD = p.brand?.toLowerCase() || '';
+            const marcaBusqueda = marcaSeleccionada.toLowerCase();
+
+            // DICCIONARIO INTELIGENTE: Si el usuario busca "Lattafa", también busca sus líneas famosas
+            if (marcaBusqueda === 'lattafa') {
+                return nombre.includes('lattafa') || 
+                       nombre.includes('asad') || 
+                       nombre.includes('yara') || 
+                       nombre.includes('khamrah') || 
+                       nombre.includes('badee al oud') ||
+                       marcaBD === 'lattafa';
+            }
+
+            // Para el resto de marcas, busca normal
+            return nombre.includes(marcaBusqueda) || marcaBD === marcaBusqueda;
+          })
+        : iphones;
 
     return (
-        <main className="min-h-screen bg-[#070b12] pt-32 pb-20 relative overflow-hidden font-sans">
-            
-            {/* FONDO DE TEXTURA OSCURA (Pasto/Naturaleza Premium) */}
-            <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
-                <img 
-                    src="https://images.unsplash.com/photo-1533460004989-cef01064af7e?q=80&w=2070&auto=format&fit=crop" 
-                    className="w-full h-full object-cover scale-110"
-                    alt="bg"
-                />
-            </div>
-            
-            {/* GRADIENTES DECORATIVOS */}
-            <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#22c55e]/5 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#22c55e]/5 rounded-full blur-[120px] pointer-events-none"></div>
-
-            <div className="relative z-10 max-w-7xl mx-auto px-4">
+        <div className="min-h-screen bg-[#070b12] text-white pt-28 pb-32">
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
                 
-                {/* ENCABEZADO ESTILO CASA LATTAFA */}
-                <div className="text-center mb-16">
-                    <div className="flex items-center justify-center gap-2 mb-4">
-                        <Sparkles size={16} className="text-[#22c55e]" />
-                        <h2 className="text-[#22c55e] font-black tracking-[0.4em] uppercase text-xs italic">GOSU ÁRABE</h2>
-                        <Sparkles size={16} className="text-[#22c55e]" />
+                {/* CABECERA */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 border-b border-white/10 pb-8">
+                    <div>
+                        <h1 className="text-4xl font-black italic tracking-tighter uppercase mb-2">Catálogo Gosu</h1>
+                        <p className="text-slate-400">Selecciona tu categoría y marca favorita.</p>
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-black text-white italic uppercase tracking-tighter mb-4">
-                        CASA <span className="text-transparent" style={{ WebkitTextStroke: '1px white' }}>LATTAFA</span>
-                    </h1>
-                    <p className="text-slate-400 font-bold uppercase tracking-widest text-sm mb-10 italic">Catálogo Exclusivo Mayorista</p>
-                    
-                    {/* BARRA DE BÚSQUEDA */}
-                    <div className="max-w-md mx-auto relative group">
-                        <div className="absolute inset-0 bg-[#22c55e]/10 blur-xl opacity-50 group-focus-within:opacity-100 transition-opacity"></div>
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={20} />
-                        <input 
-                            type="text" 
-                            placeholder="BUSCAR FRAGANCIA..."
-                            className="w-full bg-[#0b1118]/80 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white font-bold placeholder:text-slate-600 focus:border-[#22c55e] outline-none backdrop-blur-xl transition-all uppercase text-sm italic"
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+                    <div className="bg-blue-500/10 border border-blue-500/30 px-6 py-4 rounded-2xl flex items-center gap-4">
+                        <AlertCircle className="text-blue-400" size={20} />
+                        <div>
+                            <p className="text-blue-400 font-black italic uppercase text-sm">Mínimo Mayorista</p>
+                            <p className="text-slate-400 text-xs">6 perfumes para procesar pedido.</p>
+                        </div>
                     </div>
                 </div>
 
-                {/* ESTADO DE CARGA */}
-                {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <div className="w-12 h-12 border-4 border-[#22c55e]/30 border-t-[#22c55e] rounded-full animate-spin mb-4"></div>
-                        <p className="text-[#22c55e] font-black uppercase tracking-widest text-sm italic">Cargando inventario...</p>
-                    </div>
-                ) : (
-                    /* GRID DE PRODUCTOS DINÁMICO DESDE SUPABASE */
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {filteredPerfumes.length > 0 ? (
-                            filteredPerfumes.map((perfume) => (
-                                <div key={perfume.id} className="group relative">
-                                    <div className="bg-[#0b1118]/60 border border-white/5 rounded-[2.5rem] p-8 backdrop-blur-xl hover:border-[#22c55e]/50 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden">
-                                        
-                                        <div className="absolute top-6 right-6 z-20 bg-[#22c55e]/10 border border-[#22c55e]/30 px-3 py-1 rounded-full flex items-center gap-1">
-                                            <CheckCircle size={10} className="text-[#22c55e]" />
-                                            <span className="text-[9px] text-[#22c55e] font-black uppercase tracking-tighter">Original</span>
-                                        </div>
+                {/* BOTONES PRINCIPALES */}
+                <div className="flex items-center gap-4 mb-6">
+                    <button onClick={() => {setCategoriaActiva('Perfumería'); setMarcaSeleccionada('Todos');}} className={`px-8 py-4 rounded-2xl font-black italic text-sm flex items-center gap-2 transition-all ${categoriaActiva === 'Perfumería' ? 'bg-[#22c55e] text-[#070b12]' : 'bg-white/5 text-slate-400'}`}>
+                        <Droplets size={20} /> PERFUMERÍA
+                    </button>
+                    <button onClick={() => setCategoriaActiva('iPhone')} className={`px-8 py-4 rounded-2xl font-black italic text-sm flex items-center gap-2 transition-all ${categoriaActiva === 'iPhone' ? 'bg-[#22c55e] text-[#070b12]' : 'bg-white/5 text-slate-400'}`}>
+                        <Smartphone size={20} /> IPHONE
+                    </button>
+                </div>
 
-                                        <div className="aspect-square mb-8 relative flex items-center justify-center">
-                                            <div className="absolute w-3/4 h-3/4 bg-[#22c55e]/5 rounded-full blur-3xl group-hover:bg-[#22c55e]/10 transition-all"></div>
-                                            <img 
-                                                src={perfume.image} 
-                                                alt={perfume.name}
-                                                className="relative z-10 w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.7)] group-hover:scale-110 transition-transform duration-500"
-                                            />
-                                        </div>
-
-                                        <div className="text-center relative z-10">
-                                            <h3 className="text-white font-black text-xl leading-tight mb-2 italic uppercase tracking-tighter">
-                                                {perfume.name}
-                                            </h3>
-                                            <p className="text-slate-500 text-[10px] font-black tracking-[0.2em] mb-4 uppercase">
-                                                EDP • {perfume.size} • IMPORTADO
-                                            </p>
-                                            
-                                            <div className="flex flex-col items-center gap-1 mb-6">
-                                                {/* Solo muestra el precio viejo si existe en Supabase */}
-                                                {perfume.old_price && (
-                                                    <span className="text-slate-600 text-xs font-bold line-through">
-                                                        S/ {perfume.old_price.toFixed(2)}
-                                                    </span>
-                                                )}
-                                                <span className="text-[#22c55e] text-4xl font-black italic tracking-tighter">
-                                                    S/ {perfume.price.toFixed(2)}
-                                                </span>
-                                            </div>
-
-                                            <button 
-                                                onClick={() => window.open(`https://wa.me/51907024684?text=Hola GOSU, me interesa el perfume mayorista: ${perfume.name}`)}
-                                                className="w-full bg-[#22c55e] text-[#0b1118] py-4 rounded-2xl font-black uppercase italic hover:bg-[#1ea950] transition-all flex items-center justify-center gap-3 active:scale-95 shadow-[0_10px_20px_rgba(34,197,94,0.2)]"
-                                            >
-                                                <ShoppingCart size={18} /> Pedir Mayorista
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="col-span-full text-center py-20 text-slate-500 font-medium">
-                                No se encontraron perfumes en el inventario.
-                            </div>
-                        )}
+                {/* SUB-FILTRO DE MARCAS */}
+                {categoriaActiva === 'Perfumería' && (
+                    <div className="flex items-center gap-2 mb-10 overflow-x-auto pb-4 scrollbar-hide">
+                        {MARCAS_PERFUMES.map(marca => (
+                            <button
+                                key={marca}
+                                onClick={() => setMarcaSeleccionada(marca)}
+                                className={`px-5 py-2 rounded-full text-xs font-bold transition-all border shrink-0 ${marcaSeleccionada === marca ? 'bg-white text-black border-white' : 'bg-transparent text-slate-500 border-white/10 hover:border-white/40'}`}
+                            >
+                                {marca}
+                            </button>
+                        ))}
                     </div>
                 )}
 
-                {/* SECCIÓN MÍNIMO DE COMPRA */}
-                <div className="mt-24 max-w-4xl mx-auto">
-                    <div className="bg-gradient-to-r from-[#22c55e]/10 to-transparent border border-[#22c55e]/20 rounded-[2.5rem] p-10 backdrop-blur-md relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <Star size={120} className="text-[#22c55e]" strokeWidth={1} />
+                {/* GRILLA DE PRODUCTOS */}
+                {loading ? (
+                    <div className="text-center py-20 font-bold animate-pulse">Cargando...</div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {productosAMostrar.map((prod) => {
+                            const qty = carrito[prod.id] || 0;
+                            return (
+                                <div key={prod.id} className={`bg-[#0f172a] border rounded-3xl overflow-hidden flex flex-col transition-all ${qty > 0 ? 'border-[#22c55e]' : 'border-white/5'}`}>
+                                    <div className="h-52 p-6 flex items-center justify-center bg-gradient-to-b from-white/5 to-transparent">
+                                        <img src={prod.image} alt={prod.name} className="h-full object-contain drop-shadow-2xl" />
+                                    </div>
+                                    <div className="p-5 flex-1 flex flex-col">
+                                        <p className="text-[10px] font-black uppercase text-[#22c55e] mb-1">{prod.brand || categoriaActiva}</p>
+                                        <h3 className="font-bold text-sm leading-tight mb-4 flex-1">{prod.name}</h3>
+                                        {/* CAMBIO AQUÍ: S/ en lugar de $ */}
+                                        <p className="text-2xl font-black italic mb-5">S/ {prod.price?.toFixed(2)}</p>
+                                        
+                                        {qty > 0 ? (
+                                            <div className="flex items-center justify-between bg-[#22c55e] text-[#070b12] rounded-xl p-1">
+                                                <button onClick={() => handleRemove(prod.id)} className="w-8 h-8 flex items-center justify-center"><Minus size={16} /></button>
+                                                <span className="font-black">{qty}</span>
+                                                <button onClick={() => handleAdd(prod.id)} className="w-8 h-8 flex items-center justify-center"><Plus size={16} /></button>
+                                            </div>
+                                        ) : (
+                                            <button onClick={() => handleAdd(prod.id)} className="w-full bg-white/5 hover:bg-white hover:text-black py-3 rounded-xl font-bold text-xs transition-all">
+                                                AGREGAR AL PEDIDO
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+
+            {/* BARRA DE TOTAL (Carrito) */}
+            {totalItems > 0 && (
+                <div className="fixed bottom-0 left-0 w-full bg-[#070b12]/90 backdrop-blur-xl border-t border-white/10 p-6 z-50">
+                    <div className="max-w-7xl mx-auto flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="bg-[#22c55e] text-[#070b12] w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl">{totalItems}</div>
+                            {/* CAMBIO AQUÍ: S/ en lugar de $ */}
+                            <p className="text-2xl font-black italic">S/ {totalPrecio.toFixed(2)}</p>
                         </div>
-                        
-                        <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-                            <div className="w-20 h-20 bg-[#22c55e] rounded-3xl flex items-center justify-center text-[#0b1118] shrink-0 shadow-[0_0_30px_rgba(34,197,94,0.4)]">
-                                <Info size={40} />
-                            </div>
-                            <div className="text-center md:text-left">
-                                <h4 className="text-white font-black text-2xl uppercase italic mb-2 tracking-tighter">Condiciones Mayoristas</h4>
-                                <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-xl italic">
-                                    Precios exclusivos para revendedores a partir de 6 unidades. Consultar precios especiales por cajón cerrado (12 unidades). Stock garantizado y envío inmediato a todo el Perú.
-                                </p>
-                            </div>
-                            <button 
-                                onClick={() => window.open(`https://wa.me/51907024684?text=Hola GOSU, quiero información sobre las compras por cajón.`)}
-                                className="px-8 py-4 bg-white text-black font-black uppercase italic rounded-2xl hover:bg-[#22c55e] hover:text-white transition-all whitespace-nowrap shadow-xl"
-                            >
-                                Consultar Cajón
-                            </button>
-                        </div>
+                        {canCheckout ? (
+                            <button className="bg-[#22c55e] text-[#070b12] px-10 py-4 rounded-2xl font-black uppercase text-sm">Confirmar Pedido</button>
+                        ) : (
+                            <p className="text-slate-500 text-xs font-bold uppercase italic">Faltan {minPerfumes - totalPerfumes} perfumes</p>
+                        )}
                     </div>
                 </div>
-
-                <div className="mt-20 text-center text-slate-600 text-[10px] font-bold uppercase tracking-[0.3em]">
-                    GOSU IMPORT © 2026 • PERFUMES MAYORISTAS
-                </div>
-            </div>
-        </main>
+            )}
+        </div>
     );
 }

@@ -1,8 +1,7 @@
-import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import InfoCards from './components/InfoCards'
 import MiamiAddress from './components/MiamiAddress'
-import Pricing from './components/Princind' // O Pricing si lo renombras
+import Pricing from './components/Princind' 
 import HowItWorks from './components/HowItWorks'
 import FirstImport from './components/FirstImport'
 import OurWork from './components/OurWork'
@@ -13,8 +12,8 @@ import Footer from './components/Footer'
 
 export default function Home() {
   return (
-    <main className="flex flex-col">
-      <Navbar />
+    <div className="flex flex-col">
+      {/* Ya no necesitas el <Navbar /> aquí, el Layout lo pone por ti */}
       <Hero />
       <InfoCards />
       <MiamiAddress />
@@ -26,6 +25,6 @@ export default function Home() {
       <Faq />
       <Cta />
       <Footer />
-    </main>
+    </div>
   )
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
-import { LogOut, LayoutGrid, User, ShieldCheck, Calculator, Star, UserPlus } from 'lucide-react';
+import { LogOut, LayoutGrid, User, ShieldCheck, Calculator, Star, UserPlus, Package } from 'lucide-react';
 
 // --- CONEXIÓN A SUPABASE ---
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://scpmnmgdvfdbpuyeiawn.supabase.co';
@@ -78,12 +78,14 @@ export default function Navbar() {
                   <ShieldCheck size={16} className="hidden xs:block" /> Panel Admin
                 </Link>
               ) : (
-                <Link 
-                  href="/dashboard" 
-                  className="flex items-center gap-2 text-[#22c55e] font-black italic text-[10px] md:text-[11px] uppercase hover:text-white transition-all bg-[#22c55e]/10 px-3 md:px-4 py-2.5 rounded-xl border border-[#22c55e]/20 shadow-[0_0_20px_rgba(34,197,94,0.1)]"
-                >
-                  <User size={16} className="hidden xs:block" /> Mi Casillero
-                </Link>
+                <div className="flex items-center gap-2 md:gap-3">
+                  <Link 
+                    href="/mi-orden" 
+                    className="flex items-center gap-2 text-amber-400 font-black italic text-[10px] md:text-[11px] uppercase hover:text-white transition-all bg-amber-400/10 px-3 md:px-4 py-2.5 rounded-xl border border-amber-400/20 shadow-[0_0_20px_rgba(251,191,36,0.15)]"
+                  >
+                    <Package size={16} className="hidden xs:block" /> Mi Orden
+                  </Link>
+                </div>
               )}
 
               {/* BOTÓN SALIR */}

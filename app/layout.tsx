@@ -1,8 +1,8 @@
 "use client"; // Importante: el layout ahora maneja estados
 import React, { useState, useEffect } from 'react';
 import './globals.css';
-import Navbar from './components/Navbar';
-import LoadingScreen from './components/LoadingScreen'; // El que creamos antes
+import Navbar from '../src/presentation/components/layout/Navbar';
+import LoadingScreen from '../src/presentation/components/layout/LoadingScreen'; // El que creamos antes
 
 export default function RootLayout({
   children,

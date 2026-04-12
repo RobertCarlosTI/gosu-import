@@ -1,14 +1,12 @@
-import Hero from './components/Hero'
-import InfoCards from './components/InfoCards'
-import MiamiAddress from './components/MiamiAddress'
-import Pricing from './components/Princind' 
-import HowItWorks from './components/HowItWorks'
-import FirstImport from './components/FirstImport'
-import OurWork from './components/OurWork'
-import Testimonials from './components/Testimonials'
-import Faq from './components/Faq'
-import Cta from './components/Cta'
-import Footer from './components/Footer'
+import Hero from '../src/presentation/components/landing/Hero'
+import InfoCards from '../src/presentation/components/shared/InfoCards'
+import Pricing from '../src/presentation/components/shared/Princind' 
+import HowItWorks from '../src/presentation/components/landing/HowItWorks'
+import OurWork from '../src/presentation/components/landing/OurWork'
+import Testimonials from '../src/presentation/components/landing/Testimonials'
+import Faq from '../src/presentation/components/landing/Faq'
+import Cta from '../src/presentation/components/landing/Cta'
+import Footer from '../src/presentation/components/layout/Footer'
 
 export default function Home() {
   return (
@@ -16,10 +14,8 @@ export default function Home() {
       {/* Ya no necesitas el <Navbar /> aquí, el Layout lo pone por ti */}
       <Hero />
       <InfoCards />
-      <MiamiAddress />
       <Pricing />
       <HowItWorks />
-      <FirstImport />
       <OurWork />
       <Testimonials />
       <Faq />

@@ -3,29 +3,48 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { createClient } from '@supabase/supabase-js';
-import { LogOut, LayoutGrid, User, ShieldCheck, Calculator, Star, UserPlus, Package } from 'lucide-react';
-
-// --- CONEXIÓN A SUPABASE ---
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://scpmnmgdvfdbpuyeiawn.supabase.co';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'TU_ANON_KEY_AQUI';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { LogOut, LayoutGrid, ShieldCheck, Calculator, Star, UserPlus, Package } from 'lucide-react';
+// 🚀 Usamos tu cliente centralizado para consistencia total
+import { supabase } from '@/src/infrastructure/database/supabaseClient';
 
 export default function Navbar() {
   const paginaActual = usePathname();
   const [user, setUser] = useState<any>(null);
+  const [isVIP, setIsVIP] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // 1. Verificar sesión inicial
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
-    });
+      if (session?.user) checkVipStatus(session.user.id);
+    };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    getInitialSession();
+
+    // 2. Escuchar cambios de autenticación en tiempo real
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      if (session?.user) {
+        checkVipStatus(session.user.id);
+      } else {
+        setIsVIP(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Función para verificar el rol VIP en la base de datos
+  const checkVipStatus = async (userId: string) => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
+    
+    if (profile?.role === 'vip') setIsVIP(true);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -35,7 +54,8 @@ export default function Navbar() {
   // --- LÓGICA DE SEGURIDAD GOSU ---
   const esAdmin = user?.email === 'gosu.import01@gmail.com';
 
-  const paginasOcultas = ["/login", "/register", "/sign-in", "/sign-up"];
+  // 🚀 ACTUALIZADO: Ocultamos el navbar en tus rutas reales de auth
+  const paginasOcultas = ["/login", "/register"];
   if (paginasOcultas.includes(paginaActual)) return null;
 
   return (
@@ -51,7 +71,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* MENÚ CENTRAL - Visible solo en Desktop */}
+        {/* MENÚ CENTRAL - Desktop */}
         <div className="hidden lg:flex items-center gap-8 text-[11px] font-black text-slate-400 uppercase italic tracking-wider">
           <Link href="/#servicios" className="hover:text-[#22c55e] transition-colors">Servicios</Link>
           <Link href="/calculadora" className={`flex items-center gap-1.5 ${paginaActual === '/calculadora' ? 'text-[#22c55e]' : 'hover:text-[#22c55e]'}`}>
@@ -69,7 +89,6 @@ export default function Navbar() {
         <div className="flex items-center gap-3 md:gap-5 shrink-0">
           {user ? (
             <>
-              {/* BOTÓN DINÁMICO: ADMIN O CLIENTE */}
               {esAdmin ? (
                 <Link 
                   href="/admin" 
@@ -78,17 +97,19 @@ export default function Navbar() {
                   <ShieldCheck size={16} className="hidden xs:block" /> Panel Admin
                 </Link>
               ) : (
-                <div className="flex items-center gap-2 md:gap-3">
-                  <Link 
-                    href="/mi-orden" 
-                    className="flex items-center gap-2 text-amber-400 font-black italic text-[10px] md:text-[11px] uppercase hover:text-white transition-all bg-amber-400/10 px-3 md:px-4 py-2.5 rounded-xl border border-amber-400/20 shadow-[0_0_20px_rgba(251,191,36,0.15)]"
-                  >
-                    <Package size={16} className="hidden xs:block" /> Mi Orden
-                  </Link>
-                </div>
+                <Link 
+                  href="/mi-orden" 
+                  className={`flex items-center gap-2 font-black italic text-[10px] md:text-[11px] uppercase transition-all px-3 md:px-4 py-2.5 rounded-xl border ${
+                    isVIP 
+                    ? 'text-amber-400 bg-amber-400/10 border-amber-400/40 shadow-[0_0_20px_rgba(251,191,36,0.2)]' 
+                    : 'text-slate-300 bg-white/5 border-white/10'
+                  } hover:text-white`}
+                >
+                  <Package size={16} className="hidden xs:block" /> 
+                  {isVIP ? 'VIP Orden' : 'Mi Orden'}
+                </Link>
               )}
 
-              {/* BOTÓN SALIR */}
               <button 
                 onClick={handleLogout}
                 className="px-4 py-2.5 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl font-black text-[10px] uppercase italic hover:bg-red-500 hover:text-white transition-all flex items-center gap-2 group"
@@ -98,8 +119,8 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            /* USUARIO NO LOGUEADO */
             <div className="flex items-center gap-4">
+              {/* 🚀 RUTAS CORREGIDAS: /login y /register directamente */}
               <Link href="/login" className="hidden md:block text-slate-400 font-bold hover:text-white transition-colors text-[11px] uppercase italic">
                 Iniciar Sesión
               </Link>
@@ -109,7 +130,6 @@ export default function Navbar() {
             </div>
           )}
         </div>
-
       </div>
     </nav>
   );

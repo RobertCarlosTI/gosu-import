@@ -1,18 +1,24 @@
 export interface OrderItem {
     id: string;
+    perfumeId: string;
     name: string;
     brand: string;
+    image: string;
     price: number;
     quantity: number;
 }
 
 export interface Order {
     id: string;
-    customerName: string;
-    phone: string;
-    address: string;
-    location: string;
-    total: number;
-    items: OrderItem[];
+    userId: string;
     status: string;
+    paymentStatus: string;
+    total: number;
+    shippingType: string;
+    shippingCost: number;
+    address?: string;
+    district?: string;
+    isFinalized: boolean;
+    createdAt: string;
+    items: OrderItem[];
 }

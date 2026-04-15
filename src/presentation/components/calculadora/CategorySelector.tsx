@@ -7,12 +7,12 @@ interface Props {
 }
 
 export const CategorySelector = ({ category, setCategory }: Props) => {
-    const categories = [
-        { id: 'iPhone', icon: <Smartphone size={16}/> },
-        { id: 'iPad', icon: <Tablet size={16}/> },
-        { id: 'Laptops', icon: <Laptop size={16}/> },
-        { id: 'Otros', icon: <Box size={16}/> }
-    ];
+    // src/presentation/components/calculadora/CategorySelector.tsx
+const categories = [
+    { id: 'iPhone', icon: <Smartphone size={16}/> },
+    { id: 'iPad', icon: <Tablet size={16}/> },
+    { id: 'Laptops', icon: <Laptop size={16}/> }
+];
 
     return (
         <div className="bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-8 mt-6">

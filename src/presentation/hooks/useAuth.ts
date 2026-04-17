@@ -1,61 +1,72 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/src/infrastructure/database/supabaseClient';
 
 export const useAuth = () => {
-    const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
 
-    const login = async (email: string, pass: string) => {
+    // --- FUNCIÓN DE REGISTRO ---
+    const register = async (email: string, password: string, name: string, phone: string) => {
         setLoading(true);
-        setError('');
+        setError(null);
+        setSuccess(false);
         try {
-            const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-            if (error) throw error;
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, name, phone }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Error al registrar');
+
             setSuccess(true);
-            setTimeout(() => router.push('/catalogo'), 1500);
+            setTimeout(() => window.location.href = '/login', 2000);
         } catch (err: any) {
-            setError(err.message || 'Credenciales incorrectas');
+            setError(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const register = async (email: string, pass: string, name: string, phone: string) => {
+    // --- FUNCIÓN DE LOGIN ---
+    const login = async (email: string, password: string) => {
         setLoading(true);
-        setError('');
+        setError(null);
         try {
-            const { error } = await supabase.auth.signUp({
-                email,
-                password: pass,
-                options: { 
-                    data: { full_name: name, phone },
-                    emailRedirectTo: `${window.location.origin}/catalogo` 
-                }
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
             });
-            if (error) throw error;
-            setSuccess(true);
-            setTimeout(() => router.push('/catalogo'), 2000);
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Error al iniciar sesión');
+
+            // Guardamos sesión en el navegador
+            localStorage.setItem('gosu_user', JSON.stringify(data.user));
+            
+            // Redirigir al inicio
+            window.location.href = '/';
         } catch (err: any) {
-            setError(err.message || 'Error al registrarse');
+            setError(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: { redirectTo: `${window.location.origin}/catalogo` }
-            });
-            if (error) throw error;
-        } catch (err: any) {
-            setError(err.message || 'Error al conectar con Google.');
-        }
+    const handleGoogleLogin = () => {
+        console.log("Próximamente: Google Auth");
     };
 
-    return { login, register, handleGoogleLogin, loading, error, success };
+    // --- RETORNO ÚNICO ---
+    // Al ponerlos aquí, TypeScript garantiza que existen en el LoginForm y RegisterForm
+    return { 
+        register, 
+        login, 
+        handleGoogleLogin, 
+        loading, 
+        error, 
+        success 
+    };
 };

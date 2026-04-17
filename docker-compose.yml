@@ -1,0 +1,16 @@
+services:
+  gosu-db:
+    image: postgres:15-alpine
+    container_name: gosu_postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=robert_admin
+      - POSTGRES_PASSWORD=gosu_secure_pass
+      - POSTGRES_DB=gosu_import_db
+    ports:
+      - "5433:5432" # <-- CAMBIA AQUÍ: Usaremos el 5433 para pgAdmin
+    volumes:
+      - gosu_data:/var/lib/postgresql/data
+
+volumes:
+  gosu_data:

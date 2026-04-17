@@ -1,8 +1,9 @@
-"use client"; // Importante: el layout ahora maneja estados
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import './globals.css';
-import Navbar from '../src/presentation/components/layout/Navbar';
-import LoadingScreen from '../src/presentation/components/layout/LoadingScreen'; // El que creamos antes
+import Navbar from '@/src/presentation/components/layout/Navbar';
+import LoadingScreen from '@/src/presentation/components/layout/LoadingScreen';
 
 export default function RootLayout({
   children,
@@ -12,18 +13,18 @@ export default function RootLayout({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-  const yaCargo = sessionStorage.getItem('gosu_loaded');
-  
-  if (yaCargo) {
-    setIsLoading(false); // Si ya entró antes, quitamos el delay
-  } else {
-    const timer = setTimeout(() => {
+    const yaCargo = sessionStorage.getItem('gosu_loaded');
+    
+    if (yaCargo) {
       setIsLoading(false);
-      sessionStorage.setItem('gosu_loaded', 'true');
-    }, 3500);
-    return () => clearTimeout(timer);
-  }
-}, []);
+    } else {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        sessionStorage.setItem('gosu_loaded', 'true');
+      }, 3500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <html lang="es">
@@ -35,7 +36,7 @@ export default function RootLayout({
         {/* CONTENIDO DE LA WEB */}
         <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
           <Navbar /> 
-          <main className="bg-transparent"> 
+          <main className="bg-transparent "> 
             {children}
           </main>
         </div>

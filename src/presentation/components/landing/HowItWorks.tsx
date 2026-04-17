@@ -5,17 +5,16 @@ import { useRouter } from "next/navigation";
 
 const importSteps = [
     { step: "PASO 1", title: "Regístrate gratis", desc: "Obtén tu casillero personal en Miami con el código GOSU. Es gratis y toma solo 2 minutos.", badge: "Casillero gratuito", icon: "👤" },
-    { step: "PASO 2", title: "Compra en USA", desc: "Compra en Amazon, eBay, Shein, o cualquier tienda de Estados Unidos. Ahorra el 7% de impuestos estatales.", badge: "Sin impuestos USA", icon: "🛒" },
-    { step: "PASO 3", title: "Recibimos tu paquete", desc: "Tu compra llega a nuestro almacén en Miami. Consolidamos hasta 5 paquetes gratis si no superan $200.", badge: "Consolidación gratis", icon: "🏢" },
-    { step: "PASO 4", title: "Envío express", desc: "Despachamos tu paquete por vía aérea a Perú. Nos encargamos de todo el proceso de importación y aduanas.", badge: "Sin trámites", icon: "✈️" },
-    { step: "PASO 5", title: "Rastrea tu pedido", desc: "Sigue el estado de tu paquete en tiempo real desde nuestra plataforma. Te notificamos en cada etapa.", badge: "Tracking en vivo", icon: "📍" },
-    { step: "PASO 6", title: "Recibe en 3 - 7 días", desc: "Recoge en Lima (zona Plaza Norte) o te enviamos a provincia por Shalom, Olva, Marvisur u otra agencia.", badge: "Entrega garantizada", icon: "✅" }
+    { step: "PASO 2", title: "Compra en USA", desc: "Compra en Amazon, eBay, o cualquier tienda de USA. Ahorra el 7% de impuestos estatales usando nuestra dirección.", badge: "Sin impuestos USA", icon: "🛒" },
+    { step: "PASO 3", title: "Recibimos tu paquete", desc: "Tus compras llegan a Miami. Consolidamos tus paquetedes desde 1 USD .", badge: "Consolidación gratis", icon: "🏢" },
+    { step: "PASO 4", title: "Tarifa Plana $12/KG", desc: "Despachamos a Perú con un costo fijo de $12 por kilogramo neto. Sin cargos por volumen ni comisiones ocultas.", badge: "$12 por Kilogramo", icon: "⚖️" },
+    { step: "PASO 5", title: "Rastrea tu pedido", desc: "Sigue el estado de tu paquete en tiempo real desde nuestra plataforma. Te notificamos cuando esté listo para entrega.", badge: "Tracking en vivo", icon: "📍" },
+    { step: "PASO 6", title: "Recibe en 3 - 7 días habiles", desc: "Recoge en Lima o te enviamos a provincia por Shalom u Olva. ¡Paga solo por el peso real que importaste!", badge: "Entrega express", icon: "✅" }
 ];
 
 export default function HowItWorks() {
     const router = useRouter();
 
-    // Función de navegación segura
     const handleNavigation = () => {
         router.push("/register");
     };
@@ -24,8 +23,12 @@ export default function HowItWorks() {
         <section id="proceso" className="relative z-10 w-full max-w-6xl mx-auto py-24 px-4 bg-transparent">
             {/* Título de la sección */}
             <div className="text-center mb-20">
-                <h2 className="text-white text-3xl md:text-5xl font-extrabold mb-4 tracking-tight uppercase italic">¿Cómo funciona?</h2>
-                <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium">Seis pasos simples para importar tus productos favoritos desde Estados Unidos</p>
+                <h2 className="text-white text-3xl md:text-5xl font-extrabold mb-4 tracking-tight uppercase italic">
+                    ¿Cómo funciona <span className="text-[#22c55e]">GOSU</span>?
+                </h2>
+                <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium">
+                    Importa de USA a Perú con nuestra tarifa plana de <span className="text-white font-bold">$12 por kg</span>
+                </p>
             </div>
             
             {/* Línea de Tiempo */}
@@ -63,17 +66,15 @@ export default function HowItWorks() {
             {/* Caja de llamado a la acción (CTA) Final */}
             <div className="relative z-20 w-full max-w-4xl mx-auto px-4 pb-32 pt-10">
                 <div className="bg-[#0f172a]/60 backdrop-blur-xl border border-white/10 p-10 md:p-16 rounded-[3rem] text-center shadow-2xl relative overflow-hidden">
-                    {/* Brillo verde decorativo */}
                     <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-3/4 h-1/2 bg-[#22c55e]/10 blur-[80px] pointer-events-none"></div>
                     
                     <h2 className="text-white text-3xl md:text-5xl font-black mb-4 relative z-10 italic uppercase tracking-tighter">
-                        ¿Listo para empezar?
+                        ¿Listo para ahorrar?
                     </h2>
                     <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto relative z-10 font-medium leading-relaxed">
-                        Regístrate gratis y obtén tu casillero personal en Miami. <br className="hidden md:block" /> Empieza a importar hoy mismo con <span className="text-white font-bold font-italic">GOSU IMPORT</span>.
+                        Únete a GOSU y aprovecha el flete de <span className="text-white font-bold">$12 el kilo</span>. Sin costos sorpresa, solo peso real.
                     </p>
                     
-                    {/* Contenedor del botón con Z-index alto para evitar que las nebulosas lo tapen */}
                     <div className="relative z-50 flex justify-center">
                         <button 
                             type="button"

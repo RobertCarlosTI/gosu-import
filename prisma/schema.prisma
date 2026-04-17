@@ -1,0 +1,29 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuario {
+  id        String   @id @default(uuid())
+  nombre    String
+  email     String   @unique
+  password  String
+  telefono  String?  // Para el WhatsApp
+  esVip     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  pedidos   Pedido[]
+}
+
+model Pedido {
+  id        String   @id @default(uuid())
+  producto  String
+  monto     Float
+  usuarioId String
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  createdAt DateTime @default(now())
+}
